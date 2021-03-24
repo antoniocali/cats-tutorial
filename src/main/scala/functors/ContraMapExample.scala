@@ -30,4 +30,17 @@ object ContraMapExample extends App {
   implicit def boxPrintable[A](implicit printable: Printable[A]): Printable[Box[A]] =
     printable.contramap[Box[A]](elem => elem.value)
 
+
+  // Cats Examples
+
+  import cats.Contravariant
+  import cats.Show
+  import cats.instances.string._
+
+  val showString: Show[String] = Show[String]
+  implicit val showSymbol: Show[Symbol] = Contravariant[Show].contramap(showString)((elem: Symbol) => s"$elem")
+  println(Show[Symbol].show(Symbol("Antonio")))
+
+  import cats.syntax.contravariant._
+  val showSymbol2: Show[Symbol] = showString.contramap[Symbol](elem => s"$elem")
 }
