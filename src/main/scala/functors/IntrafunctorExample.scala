@@ -32,14 +32,23 @@ object IntrafunctorExample extends App {
 
   implicit def boxCodec[A](implicit codec: Codec[A]): Codec[Box[A]] = new Codec[Box[A]] {
     override def encode(box: Box[A]): String = codec.encode(box.value)
+
     override def decode(value: String): Box[A] = Box(codec.decode(value))
   }
 
-//  implicit def boxCodec2[A](implicit codec: Codec[A]): Codec[Box[A]] = codec.imap(Box(_), _.value)
+  //  implicit def boxCodec2[A](implicit codec: Codec[A]): Codec[Box[A]] = codec.imap(Box(_), _.value)
 
   println(encode(5))
   println(encode(Box(4)))
   println(decode("5")(boxCodec(intCodec)))
   println(decode("5")(stringCodec))
   println(decode[Box[Int]]("5"))
+
+  // Cats
+
+  import cats.Monoid
+  import cats.instances.string._
+  import cats.syntax.invariant._
+  implicit val symbolMonoid: Monoid[Symbol] = Monoid[String].imap[Symbol]((elem: String) => Symbol.apply(elem))((elem: Symbol) => elem.name)
+
 }
