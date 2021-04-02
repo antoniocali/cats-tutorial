@@ -24,9 +24,19 @@ object EitherExample extends App {
       else "Negative".asLeft
     )
 
-  println(countPositive(List(1,2,3)))
-  println(countPositive(List(1,-1,3)))
+  println(countPositive(List(1, 2, 3)))
+  println(countPositive(List(1, -1, 3)))
 
   val d: Either[String, Int] = Either.fromOption(Some(2), "paranza")
+  println(d)
+
+  val result = for {
+    a <- 1.asRight[String]
+    b <- 0.asRight[String]
+    c <- if (b == 0) "Div0".asLeft[Int]
+    else (a / b).asRight[String]
+  } yield a * b
+
+  println(result)
 
 }
