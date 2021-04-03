@@ -39,4 +39,29 @@ object EitherExample extends App {
 
   println(result)
 
+  // More Either
+  sealed trait LoginError extends Product with Serializable
+
+  final case class UserNotFound(username: String) extends LoginError
+
+  final case class PasswordWrong(username: String) extends LoginError
+
+  case object UnexpectedError extends LoginError
+
+  case class User(username: String, password: String)
+
+  type ResultLogin = Either[LoginError, User]
+
+  def handleError(error: LoginError): Unit = error match {
+    case UserNotFound(username) => println(s"$username not found")
+    case PasswordWrong(username) => println(s"$username password wrong")
+    case UnexpectedError => println("Unexpected")
+  }
+
+  val result1: ResultLogin = User("Bob", "b0b").asRight
+  val result2: ResultLogin = UserNotFound("dave").asLeft
+
+  result1.fold(handleError, println)
+  result2.fold(handleError, println)
+
 }
