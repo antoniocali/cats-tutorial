@@ -21,21 +21,32 @@ object TypeClassPrintable extends App {
     def print[A](input: A)(implicit printer: Printable[A]): Unit = println(format(input))
   }
 
-  implicit class PrintableOps[A](value: A) {
-    def format(implicit printer: Printable[A]): String = printer.format(value)
+  object PrintableSyntax {
+    implicit class PrintableOps[A](value: A) {
+      def format(implicit printer: Printable[A]): String = printer.format(value)
 
-    def print(implicit printer: Printable[A]): Unit = println(format(printer))
+      def print(implicit printer: Printable[A]): Unit = println(format(printer))
+    }
   }
 
+  import PrintableSyntax._
   import PrintableInstances._
 
   4.print
   Printable.format(5)
   Printable.print(5)
 
-  case class Cat(name: String)
+  case class Cat(name: String, age: Int)
 
-  implicit val catPrintable: Printable[Cat] = (value: Cat) => value.name
+  implicit val catPrintable: Printable[Cat] = new Printable[Cat] {
+    override def format(cat: Cat): String = {
+      val n = Printable.format(cat.name)
+      val age = Printable.format(cat.age)
+      f"$n has $age years"
+    }
 
-  Cat("pippo").print
+  }
+
+  Cat("pippo", 1).print
+  println(Cat("Pippo", 2).format)
 }

@@ -13,12 +13,12 @@ object FirstClass extends App {
   val stringAsString: String = showString.show("Abs")
   val showInt2 = 123.show
   val showString2 = "abc".show
-
+  println(showInt2)
   import java.util.Date
 
-  implicit val dateShow: Show[Date] = new Show[Date] {
-    override def show(t: Date): String = s"${t.getTime}ms"
-  }
+  implicit val dateShow: Show[Date] = new Show[Date]:
+      override def show(t: Date): String = s"${t.getTime}ms"
+
 
   new Date().show
 

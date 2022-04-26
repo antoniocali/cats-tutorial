@@ -14,20 +14,20 @@ object MonoidsExample extends App {
     def apply[A](implicit monoid: Monoids[A]): Monoids[A] = monoid
   }
 
-  implicit val booleanAndMonoid = new Monoids[Boolean] {
+  given booleanAndMonoid: Monoids[Boolean] = new Monoids[Boolean] {
     override def combine(x: Boolean, y: Boolean): Boolean = x && y
 
     override def empty: Boolean = true
 
   }
-  implicit val booleanOrMonoid = new Monoids[Boolean] {
+  given booleanOrMonoid: Monoids[Boolean] = new Monoids[Boolean] {
     override def combine(x: Boolean, y: Boolean): Boolean = x || y
     override def empty: Boolean = false
   }
 
   Monoids[Boolean](booleanAndMonoid).combine(true, true)
 
-  implicit def setUnionMonoid[A] = new Monoids[Set[A]] {
+  given setUnionMonoid[A]: Monoids[Set[A]] with {
     override def combine(x: Set[A], y: Set[A]): Set[A] = x union y
     override def empty: Set[A] = Set.empty
   }
